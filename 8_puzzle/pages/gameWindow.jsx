@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import {game} from '../../8_puzzle/components/game';
-
 
 const initialMatrix = [
   [1, 2, 3],
@@ -9,7 +7,8 @@ const initialMatrix = [
 ];
 
 const shuffleMatrix = (matrix) => {
-  const flatMatrix = matrix.flat();
+  const newMatrix = JSON.parse(JSON.stringify(matrix)); // Clone the matrix to avoid modifying the original one
+  const flatMatrix = newMatrix.flat();
   for (let i = flatMatrix.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [flatMatrix[i], flatMatrix[j]] = [flatMatrix[j], flatMatrix[i]];
@@ -21,7 +20,6 @@ const shuffleMatrix = (matrix) => {
   ];
 };
 
-
 const GameWindow = () => {
   const [grid, setGrid] = useState(initialMatrix);
 
@@ -31,17 +29,20 @@ const GameWindow = () => {
   };
 
   const handlePlay = () => {
-    alert("play");
-  }
+    alert('Play');
+  };
 
-  return(
+  return (
     <div className="container mx-auto mt-10 text-center">
       <h1 className="text-4xl font-bold mb-4">8 Puzzle Game</h1>
       <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto mb-4">
         {grid.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center">
+          <div key={rowIndex} className="grid grid-cols-3 gap-2">
             {row.map((value, colIndex) => (
-              <div key={colIndex} className="w-12 h-12 border border-gray-400 flex items-center justify-center text-2xl">
+              <div
+                key={colIndex}
+                className="w-12 h-12 border border-gray-400 flex items-center justify-center text-2xl"
+              >
                 {value !== 0 ? value : ' '}
               </div>
             ))}
@@ -49,11 +50,20 @@ const GameWindow = () => {
         ))}
       </div>
       <div>
-        <button className="px-4 py-2 mr-2 bg-blue-500 hover:bg-blue-600 text-white rounded" onClick={handleShuffle}>Shuffle</button>
-        <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded" onClick={handlePlay}>Play</button>
+        <button
+          className="px-4 py-2 mr-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+          onClick={handleShuffle}
+        >
+          Shuffle
+        </button>
+        <button
+          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded"
+          onClick={handlePlay}
+        >
+          Play
+        </button>
       </div>
-
-  </div>
+    </div>
   );
 };
 
