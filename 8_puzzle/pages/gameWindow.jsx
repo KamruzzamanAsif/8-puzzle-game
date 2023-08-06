@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
 const initialMatrix = [
-  [1, 2, 3],
-  [4, 5, 6],
+  [1, 5, 3],
+  [4, 2, 6],
   [7, 8, 0], // 0 represents the empty tile
 ];
 
 const shuffleMatrix = (matrix) => {
-  const newMatrix = JSON.parse(JSON.stringify(matrix)); // Clone the matrix to avoid modifying the original one
+  const newMatrix = JSON.parse(JSON.stringify(matrix));
   const flatMatrix = newMatrix.flat();
   for (let i = flatMatrix.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -26,18 +26,19 @@ const GameWindow = () => {
   const handleShuffle = () => {
     const shuffledMatrix = shuffleMatrix(initialMatrix);
     setGrid(shuffledMatrix);
+    initialMatrix = shuffledMatrix;
   };
 
   const handlePlay = () => {
-    alert('Play');
-  };
+    game = Game(initialMatrix);
+  }
 
   return (
     <div className="container mx-auto mt-10 text-center">
       <h1 className="text-4xl font-bold mb-4">8 Puzzle Game</h1>
-      <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto mb-4">
+      <div className="max-w-xs mx-auto mb-4">
         {grid.map((row, rowIndex) => (
-          <div key={rowIndex} className="grid grid-cols-3 gap-2">
+          <div key={rowIndex} className="flex justify-center">
             {row.map((value, colIndex) => (
               <div
                 key={colIndex}
@@ -49,20 +50,19 @@ const GameWindow = () => {
           </div>
         ))}
       </div>
-      <div>
-        <button
-          className="px-4 py-2 mr-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
-          onClick={handleShuffle}
-        >
-          Shuffle
-        </button>
-        <button
-          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded"
-          onClick={handlePlay}
-        >
-          Play
-        </button>
-      </div>
+      <button
+        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+        onClick={handleShuffle}
+      >
+        Shuffle
+      </button>
+
+      <button
+        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+        onClick={handlePlay}
+      >
+        Play
+      </button>
     </div>
   );
 };
