@@ -8,7 +8,7 @@ class Node{
     cost: any;
     level: any;
 
-    constructor(parent, matrix, x, y, cost, level) {
+    constructor(parent: any, matrix: any, x: any, y: any, cost: any, level: any) {
         this.parent = parent;
         this.matrix = matrix;
         this.x = x;
@@ -30,9 +30,8 @@ class Game{
         [7, 8, 0], // 0 represents the empty tile
     ];
 
-    solution_matrices = [];
 
-    constructor(initialMatrix: any){this.initialMatrix = initialMatrix;}
+    solution_matrices = [];
 
 
     calculateCost(initialMat: any, finalMat: any): any {
@@ -40,7 +39,7 @@ class Game{
         for (let i = 0; i < this.N; i++) {
             for (let j = 0; j < this.N; j++) {
                 if (initialMat[i][j] !== 0 && initialMat[i][j] !== finalMat[i][j]) {
-                count++;
+                    count++;
                 }
             }
         }

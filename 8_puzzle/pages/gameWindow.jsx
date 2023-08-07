@@ -23,14 +23,19 @@ const shuffleMatrix = (matrix) => {
 
 const GameWindow = () => {
   const [grid, setGrid] = useState(initialMatrix);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isSolved, setIsSolved] = useState(false); // Track puzzle completion
+
 
   const handleShuffle = () => {
     const shuffledMatrix = shuffleMatrix(initialMatrix);
     setGrid(shuffledMatrix);
     initialMatrix = shuffledMatrix;
+    console.log(initialMatrix);
+    setIsSolved(false);
   };
 
-  function findEmptyTilePosition(matrix) {
+  const findEmptyTilePosition = (matrix) => {
     for (let row = 0; row < matrix.length; row++) {
         for (let col = 0; col < matrix[row].length; col++) {
             if (matrix[row][col] === 0) {
@@ -41,12 +46,23 @@ const GameWindow = () => {
     return null; // Return null if the empty tile is not found
   }
 
-  const handlePlay = () => {
-    const game = new Game(initialMatrix);
+  const handlePlay = async () => {
+    setIsPlaying(true);
+    setIsSolved(false); // Reset the win message
+
+    const game = new Game();
     var emptyTilePosition = findEmptyTilePosition(initialMatrix);
     const solution_matrices = game.solve(initialMatrix, emptyTilePosition.x, emptyTilePosition.y);
     console.log("Empty tile is at row:", emptyTilePosition.x);
     console.log("Empty tile is at column:", emptyTilePosition.y);
+    console.log(solution_matrices);
+
+    for (let i = 0; i < solution_matrices.length; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Delay each step by 1000ms
+      setGrid(solution_matrices[i]);
+    }
+    setIsPlaying(false);
+    setIsSolved(true); // Set win message after solving
   }
 
   return (
@@ -66,16 +82,23 @@ const GameWindow = () => {
           </div>
         ))}
       </div>
+      {isSolved && <p className="text-green-600 font-bold">Congratulations! You've won!</p>}
       <button
-        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+        className={`px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded ${
+          isPlaying ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
+        }`}
         onClick={handleShuffle}
+        disabled={isPlaying}
       >
         Shuffle
       </button>
 
       <button
-        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+        className={`px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded ${
+          isPlaying ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
+        }`}
         onClick={handlePlay}
+        disabled={isPlaying}
       >
         Play
       </button>
