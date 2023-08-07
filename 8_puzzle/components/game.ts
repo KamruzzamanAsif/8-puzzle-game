@@ -20,19 +20,20 @@ class Node{
 
 
 class Game{
-    const N = 3;
-    const row = [1, 0, -1, 0];
-    const col = [0, -1, 0, 1];
-    const initialMatrix: any;
-    const goalMatrix = [
+    N = 3;
+    row = [1, 0, -1, 0];
+    col = [0, -1, 0, 1];
+    initialMatrix: any;
+    goalMatrix = [
         [1, 2, 3],
         [4, 5, 6],
         [7, 8, 0], // 0 represents the empty tile
     ];
 
-    constructor(initialMatrix: any){
-        this.initialMatrix = initialMatrix;
-    }
+    solution_matrices = [];
+
+    constructor(initialMatrix: any){this.initialMatrix = initialMatrix;}
+
 
     calculateCost(initialMat: any, finalMat: any): any {
         let count = 0;
@@ -46,11 +47,11 @@ class Game{
         return count;
     }
 
-    createNode(mat, x, y, newX, newY, level, parent): any{
+    createNode(mat: any, x: any, y: any, newX: any, newY: any, level: any, parent: any): any{
         var newMatrix = [];
         // copy data from the parent node to the current node
         for (let i = 0; i < this.N; i++) {
-        newMatrix[i] = mat[i].slice(); // make a copy of each row
+            newMatrix[i] = mat[i].slice(); // make a copy of each row
         }
 
         // move tile by 1 position
@@ -63,44 +64,44 @@ class Game{
         return new Node(parent, newMatrix, newX, newY, cost, level);
     }
 
-    function printPath(mat) {
+    printPath(mat: any): any {
         if(mat.parent != null)
-        printPath(mat.parent);
+            this.printPath(mat.parent);
         console.log(mat.matrix);
+        this.solution_matrices.push(mat.matrix);
     }
 
-    function isSafe(x, y) {
-        return x >= 0 && x < N && y >= 0 && y < N ? 1 : 0;
+    isSafe(x: any, y: any): any {
+        return x >= 0 && x < this.N && y >= 0 && y < this.N ? 1 : 0;
     }
 
 
-    function solve(initialMatrix, x, y, goalMatrix){
-        var myComparator = function(lhs, rhs) {return (lhs.cost + lhs.level) - (rhs.cost + rhs.level)};
+    solve(initialMatrix: any, x: any, y: any): any{
+        var myComparator = function(lhs: any, rhs: any) {return (lhs.cost + lhs.level) - (rhs.cost + rhs.level)};
         var priority_queue = new PriorityQueue({comparator: myComparator});
 
-        const root = createNode(initialMatrix, x, y, x, y, 0, null);
-        root.cost = calculateCost(initialMatrix, goalMatrix);
+        const root = this.createNode(initialMatrix, x, y, x, y, 0, null);
+        root.cost = this.calculateCost(initialMatrix, this.goalMatrix);
 
         priority_queue.queue(root);
 
         while(priority_queue.length>0){
-        var min = priority_queue.dequeue();
+            var min = priority_queue.dequeue();
 
-        if(min.cost == 0){
-            printPath(min);
-            return;
-        }
-
-        for(var i = 0; i<4; i++){
-            if(isSafe(min.x + row[i], min.y + col[i]) > 0){
-            var child = createNode(min.matrix, min.x, min.y, min.x + row[i], min.y + col[i], min.level+1, min);
-            child.cost = calculateCost(child.matrix, goalMatrix);
-            priority_queue.queue(child);
+            if(min.cost == 0){
+                this.printPath(min);
+                return this.solution_matrices;
             }
-        }
+
+            for(var i = 0; i<4; i++){
+                if(this.isSafe(min.x + this.row[i], min.y + this.col[i]) > 0){
+                    var child = this.createNode(min.matrix, min.x, min.y, min.x + this.row[i], min.y + this.col[i], min.level+1, min);
+                    child.cost = this.calculateCost(child.matrix, this.goalMatrix);
+                    priority_queue.queue(child);
+                }
+            }   
         }
     }
-
-    solve(initialMatrix, x, y, goalMatrix);
 }
 
+export default Game;

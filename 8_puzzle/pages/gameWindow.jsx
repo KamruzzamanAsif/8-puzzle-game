@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import Game from '../components/game';
 
-const initialMatrix = [
-  [1, 5, 3],
-  [4, 2, 6],
-  [7, 8, 0], // 0 represents the empty tile
+var initialMatrix = [
+  [1, 2, 3],
+  [5, 6, 0],
+  [7, 8, 4], // 0 represents the empty tile
 ];
 
 const shuffleMatrix = (matrix) => {
@@ -29,8 +30,23 @@ const GameWindow = () => {
     initialMatrix = shuffledMatrix;
   };
 
+  function findEmptyTilePosition(matrix) {
+    for (let row = 0; row < matrix.length; row++) {
+        for (let col = 0; col < matrix[row].length; col++) {
+            if (matrix[row][col] === 0) {
+                return { x: row, y: col }; // Return the position as an object
+            }
+        }
+    }
+    return null; // Return null if the empty tile is not found
+  }
+
   const handlePlay = () => {
-    game = Game(initialMatrix);
+    const game = new Game(initialMatrix);
+    var emptyTilePosition = findEmptyTilePosition(initialMatrix);
+    const solution_matrices = game.solve(initialMatrix, emptyTilePosition.x, emptyTilePosition.y);
+    console.log("Empty tile is at row:", emptyTilePosition.x);
+    console.log("Empty tile is at column:", emptyTilePosition.y);
   }
 
   return (
